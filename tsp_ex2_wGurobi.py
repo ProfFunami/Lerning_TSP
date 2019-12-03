@@ -20,7 +20,7 @@ def solve_tsp(V, c):
         G.add_nodes_from(V)
         for (i, j) in edges:
             G.add_edge(i, j)
-        Components = nx.connected_components(G)
+        Components = list(nx.connected_components(G))
         if len(Components) == 1:
             return False
         for S in Components:
