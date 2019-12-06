@@ -55,6 +55,7 @@ def visualize_visit_order(order, city_xy):
     plt.figure(figsize=(4, 4))
     plt.plot(x_arr, y_arr, 'o-')
     plt.show()
+    print(x_arr)
 
 
 # visualize_visit_order(test_order, city_xy)

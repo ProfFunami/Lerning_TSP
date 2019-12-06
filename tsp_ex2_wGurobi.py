@@ -2,6 +2,7 @@ from gurobipy import *
 import networkx as nx
 import random
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def solve_tsp(V, c):
@@ -56,14 +57,13 @@ def solve_tsp(V, c):
 def make_data(n):
     """make_data: compute matrix distance based on euclidean distance"""
     V = range(1, n + 1)
-    x = dict([(i, random.random()) for i in V])
-    y = dict([(i, random.random()) for i in V])
+    xy = dict([(i, (random.random(), random.random())) for i in V])
     c = {}
     for i in V:
         for j in V:
             if j > i:
-                c[i, j] = distance(x[i], y[i], x[j], y[j])
-    return V, c
+                c[i, j] = distance(xy[i][0], xy[i][1], xy[j][0], xy[j][1])
+    return V, c, xy
 
 
 def distance(x1, y1, x2, y2):
@@ -71,16 +71,37 @@ def distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
-n = 200
-seed = 1
-random.seed(seed)
-V, c = make_data(n)
+def visualize_visit_order(edges, city_xy):
+    """Visualize traveling path for given visit order"""
+    G = nx.Graph()
+    G.add_edges_from(edges)
+    nx.draw(G, pos=city_xy)
+    plt.show()
+    # plt.figure(figsize=(4, 4))
+    # for e in edges:
+    #     plt.plot(city_xy[0][e[0]], city_xy[1][e[0]], 'o-')
+    #     plt.plot(city_xy[0][e[1]], city_xy[1][e[1]], 'o-')
+    # # plt.plot(x_arr, y_arr, 'o-')
+    # plt.show()
 
-obj, edges = solve_tsp(V, c)
 
-print()
-print("Optimal tour:", edges)
-print("Optimal cost:", obj)
-print()
+def main():
+    n = 200
+    seed = 1
+    random.seed(seed)
+    V, c, xy = make_data(n)
 
-plt.show()
+    obj, edges = solve_tsp(V, c)
+
+    print()
+    print("Optimal tour:", edges)
+    print("Optimal cost:", obj)
+    print("V:", list(V))
+    print("c:", c)
+
+    visualize_visit_order(edges, xy)
+    # plt.show()
+
+
+if __name__ == "__main__":
+    main()
